@@ -1,0 +1,4 @@
+** DONE Get the variables stuff working.
+   CLOSED: [2021-07-23 Fri 08:31]
+** TODO Create an Infix type and from method.
+** TODO refactor for organization.
