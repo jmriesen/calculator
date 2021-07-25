@@ -1,20 +1,8 @@
 
 #[cfg(test)]
 mod tests;
+use super::*;
 
-struct Postfix<'a>{
-    expression:&'a str,
-}
-
-#[derive(Debug,PartialEq)]
-enum ExpressionError{
-    ParseError,
-    ToManyArguments,
-    ToFewArgements,
-}
-use ExpressionError::*;
-
-type VariableMap = std::collections::HashMap<String,isize>;
 
 enum Atomics{
     Operator(fn(isize,isize) -> isize,),
@@ -22,12 +10,8 @@ enum Atomics{
 }
 use Atomics::*;
 
-impl <'a>Postfix<'a>{
-    fn new(expression:&'a str)->Self{
-        let expression = expression.trim();
-        Postfix{expression}
-    }
-    fn evaluate(&'a self,variables:&VariableMap)->Result<isize,ExpressionError>{
+impl <'a> Postfix<'a>{
+    pub fn evaluate(&'a self,variables:&VariableMap)->Result<isize,ExpressionError>{
         use std::str::FromStr;
         let mut stack = vec![];
         let expression = self.expression.split(' ');
@@ -66,3 +50,12 @@ impl <'a>Postfix<'a>{
     }
 }
 
+//TODO I am wondering if I should test this function directly
+//Currently it is only being used as a way of evaluating infix
+/*
+impl <'a> From<&Infix<'a>> for Postfix<'a> {
+    fn from(item: &Infix<'a>) -> Self {
+        Postfix::new("6")
+    }
+}
+*/
