@@ -1,5 +1,8 @@
+#[derive(Clone,Copy)]
 pub struct Infix;
+#[derive(Clone,Copy)]
 pub struct Postfix;
+#[derive(Clone,Copy)]
 pub struct Prefix;
 
 //I am using trait as a way of gate keeping what can be used as and expression.
