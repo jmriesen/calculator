@@ -1,4 +1,6 @@
 use super::*;
+
+#[cfg(test)]
 mod tests;
 
 impl <'a> Prefix<'a>{

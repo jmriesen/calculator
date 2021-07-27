@@ -15,6 +15,7 @@ pub enum ExpressionError{
 use ExpressionError::*;
 pub type Postfix<'a> = Expression<'a,internal_types::Postfix>;
 pub type Prefix<'a> = Expression<'a,internal_types::Prefix>;
+pub type Infix<'a> = Expression<'a,internal_types::Infix>;
 
 #[derive(Clone)]
 pub struct Expression<'a,T:internal_types::ExpressionType>{
