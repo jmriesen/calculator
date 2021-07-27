@@ -4,6 +4,10 @@ pub mod infix;
 pub mod prefix;
 mod internal_types;
 
+mod symbol;
+use symbol::Symbol;
+mod operator;
+use operator::Operator;
 pub type VariableMap = std::collections::HashMap<String,isize>;
 
 #[derive(Debug,PartialEq)]

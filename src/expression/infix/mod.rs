@@ -1,5 +1,4 @@
 use super::*;
-use std::collections::HashMap;
 
 #[cfg(test)]
 mod tests;
@@ -12,38 +11,31 @@ impl <'a> Infix<'a>{
 
 impl<'a> From<Infix<'a>> for Postfix<'a>{
     fn from(prefix:Infix)->Postfix{
-        //TODO remove this duplication pull operators out into separate types..
-        let mut priorites = HashMap::new();
-        priorites.insert("+",1);
-        priorites.insert("-",1);
-        priorites.insert("*",2);
-        priorites.insert("/",2);
+        let mut opperators :Vec<Operator> = vec![];
+        let mut new_expresstion  = vec![];
 
-        let mut opperators = vec![];
-        let mut new_expresstion= vec![];
-        println!("before :{:?}",prefix.expression);
         for term in &prefix.expression {
-            println!("term {}",*term);
-            match *term {
-                "+" | "-" | "*" | "/" => {
-                    while let Some(opperator) = opperators.last() {
-                        if priorites.get(opperator).unwrap()>=priorites.get(*term).unwrap(){
-                            new_expresstion.push(opperators.pop().unwrap());
-                        }else{
-                            break;
-                        }
+            if let Some(opp) = Operator::new(term){
+                while let Some(opperator) = opperators.last() {
+                    if opperator.priority()>=opp.priority(){
+                        let last = opperators.pop().unwrap();
+                        new_expresstion.push(last.to_string());
+                    }else{
+                        break;
                     }
-                    opperators.push(*term);
-
-                    println!("stack :{:?}",opperators);
-                },
-                _ => new_expresstion.push(*term)
+                }
+                opperators.push(opp);
+            }else{
+                new_expresstion.push(*term);
             }
-            println!("expression:{:?}",new_expresstion);
         }
+
         opperators.reverse();
-        new_expresstion.append(&mut opperators);
-        println!("after :{:?}",new_expresstion);
+        new_expresstion.append(
+            &mut opperators.iter()
+                .map(|op| op.to_string())
+                .collect()
+        );
         Postfix::new_raw(
             new_expresstion
         )
