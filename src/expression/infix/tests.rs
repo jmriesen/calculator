@@ -32,3 +32,8 @@ fn multiplication_and_division_should_have_same_priority(){
     assert_eq!(Infix::new("8 / 2 * 3").evaluate(&Default::default()), Ok(12));
     assert_eq!(Infix::new("3 * 8 / 2").evaluate(&Default::default()), Ok(12));
 }
+#[test]
+fn adding_surrounding_parenthesies_dose_not_change_result(){
+    let variables = Default::default();
+    assert_eq!(Infix::new("3 + 2").evaluate(&variables),Infix::new("( 3 + 2 )").evaluate(&variables));
+}

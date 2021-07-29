@@ -9,6 +9,7 @@ impl <'a> Infix<'a>{
     }
 }
 
+//TODO consider parsing earlier since all espresstions need to be parsed. 
 impl<'a> From<Infix<'a>> for Postfix<'a>{
     fn from(prefix:Infix)->Postfix{
         let mut opperators :Vec<Operator> = vec![];
@@ -25,6 +26,9 @@ impl<'a> From<Infix<'a>> for Postfix<'a>{
                     }
                 }
                 opperators.push(opp);
+            }else if Ok(Symbol::Parenthesis) == Symbol::parse(term){
+                //println!("term {}",term);
+                // TODO complete implementation.
             }else{
                 new_expresstion.push(*term);
             }
@@ -36,6 +40,7 @@ impl<'a> From<Infix<'a>> for Postfix<'a>{
                 .map(|op| op.to_string())
                 .collect()
         );
+        println!("{:?}",new_expresstion);
         Postfix::new_raw(
             new_expresstion
         )

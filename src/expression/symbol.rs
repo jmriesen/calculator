@@ -1,8 +1,10 @@
 use super::ExpressionError;
+#[derive(PartialEq)]
 pub enum Symbol<'a>{
     Operator(super::Operator),
     Literal(isize),
     Variable(&'a str),
+    Parenthesis
 }
 use Symbol::*;
 impl<'a> Symbol<'a>{
@@ -12,6 +14,9 @@ impl<'a> Symbol<'a>{
             Ok(Operator(op))
         }else if let Ok(numb) = isize::from_str(symbol) {
             Ok(Literal(numb))
+        }else if symbol == "(" || symbol == ")" {
+            println!("term {}",symbol);
+            Ok(Parenthesis)
         }else{
             Ok(Variable(symbol))
         }

@@ -18,7 +18,8 @@ impl <'a> Postfix<'a>{
                     let second  = stack.pop().ok_or(ToFewArgements)?;
                     let first = stack.pop().ok_or(ToFewArgements)?;
                     op.compute(first,second)
-                }
+                },
+                Parenthesis =>{Err(ParseError)?}
             };
             stack.push(partial_result);
         }

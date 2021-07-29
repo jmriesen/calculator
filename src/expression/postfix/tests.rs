@@ -97,3 +97,11 @@ fn to_few_arguments_should_produce_error(){
     assert_eq!(Postfix::new("9 -").evaluate(&Default::default()), Err(ToFewArgements));
     assert_eq!(Postfix::new("1 3 + +").evaluate(&Default::default()), Err(ToFewArgements));
 }
+
+#[test]
+fn should_not_allow_parenthesis(){
+    assert_eq!(Postfix::new(")").evaluate(&Default::default()), Err(ParseError));
+    assert_eq!(Postfix::new("5 6 ( +").evaluate(&Default::default()), Err(ParseError));
+    assert_eq!(Postfix::new("5 6 ) +").evaluate(&Default::default()), Err(ParseError));
+    assert_eq!(Postfix::new("5 6 + )").evaluate(&Default::default()), Err(ParseError));
+}
