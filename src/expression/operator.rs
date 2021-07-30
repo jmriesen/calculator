@@ -17,14 +17,6 @@ impl Operator{
             _ => None,
         }
     }
-    pub fn to_string(&self)->&'static str{
-        match self{
-            Add => "+",
-            Sub => "-",
-            Mul => "*",
-            Div => "/",
-        }
-    }
     pub fn priority(&self)->usize{
         match self{
             Add | Sub => 1,
