@@ -1,5 +1,5 @@
 use super::ExpressionError;
-#[derive(PartialEq)]
+#[derive(PartialEq,Clone,Debug)]
 pub enum Symbol<'a>{
     Operator(super::Operator),
     Literal(isize),
@@ -8,17 +8,17 @@ pub enum Symbol<'a>{
 }
 use Symbol::*;
 impl<'a> Symbol<'a>{
-    pub fn parse(symbol:&'a str)->Result<Self,ExpressionError>{
+    pub fn parse(symbol:&'a str)->Self{
         use std::str::FromStr;
         if let Some(op) = super::Operator::new(symbol){
-            Ok(Operator(op))
+            Operator(op)
         }else if let Ok(numb) = isize::from_str(symbol) {
-            Ok(Literal(numb))
+            Literal(numb)
         }else if symbol == "(" || symbol == ")" {
             println!("term {}",symbol);
-            Ok(Parenthesis)
+            Parenthesis
         }else{
-            Ok(Variable(symbol))
+            Variable(symbol)
         }
     }
 }

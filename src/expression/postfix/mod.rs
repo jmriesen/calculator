@@ -8,12 +8,11 @@ use Symbol::*;
 impl <'a> Postfix<'a>{
     pub fn evaluate(&'a self,variables:&VariableMap)->Result<isize,ExpressionError>{
         let mut stack = vec![];
-        for term in &self.expression {
-            let symbol = Symbol::parse(term)?;
+        for symbol in &self.expression {
 
             let partial_result = match symbol {
-                Literal(numb) => numb,
-                Variable(var) => *variables.get(var).ok_or(ParseError)?,
+                Literal(numb) => *numb,
+                Variable(var) => *variables.get(*var).ok_or(ParseError)?,
                 Operator(op) => {
                     let second  = stack.pop().ok_or(ToFewArgements)?;
                     let first = stack.pop().ok_or(ToFewArgements)?;

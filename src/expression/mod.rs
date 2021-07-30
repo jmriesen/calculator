@@ -23,7 +23,7 @@ pub type Infix<'a> = Expression<'a,internal_types::Infix>;
 
 #[derive(Clone)]
 pub struct Expression<'a,T:internal_types::ExpressionType>{
-    expression:Vec<&'a str>,
+    expression:Vec<Symbol<'a>>,
     _phantom:Option<PhantomData<T>>,
 }
 impl <'a,T:internal_types::ExpressionType> Expression<'a,T>{
@@ -33,10 +33,11 @@ impl <'a,T:internal_types::ExpressionType> Expression<'a,T>{
             .split(' ')
             .map(|term| term.trim())
             .filter(|term| !term.is_empty())
+            .map(|term| Symbol::parse(term))
             .collect();
         Self{expression,_phantom:None}
     }
-    fn new_raw(expression:Vec<&'a str>)->Self{
+    fn new_raw(expression:Vec<Symbol<'a>>)->Self{
         Self{expression,_phantom:None}
     }
 }

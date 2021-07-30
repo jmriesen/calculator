@@ -11,36 +11,38 @@ impl <'a> Infix<'a>{
 
 //TODO consider parsing earlier since all espresstions need to be parsed. 
 impl<'a> From<Infix<'a>> for Postfix<'a>{
-    fn from(prefix:Infix)->Postfix{
-        let mut opperators :Vec<Operator> = vec![];
-        let mut new_expresstion  = vec![];
+    fn from(prefix:Infix<'a>)->Postfix{
+        let mut opperators : Vec<Operator> = vec![];
+        let mut new_expresstion = vec![];
 
-        for term in &prefix.expression {
-            if let Some(opp) = Operator::new(term){
-                while let Some(opperator) = opperators.last() {
-                    if opperator.priority()>=opp.priority(){
-                        let last = opperators.pop().unwrap();
-                        new_expresstion.push(last.to_string());
-                    }else{
-                        break;
+        for symbol in prefix.expression {
+            use Symbol::*;
+            match symbol{
+                Operator(opp)=>{
+                    while let Some(opperator) = opperators.last() {
+                        if opperator.priority()>=opp.priority(){
+                            let last = opperators.pop().unwrap();
+                            new_expresstion.push(Operator(last));
+                        }else{
+                            break;
+                        }
                     }
-                }
-                opperators.push(opp);
-            }else if Ok(Symbol::Parenthesis) == Symbol::parse(term){
-                //println!("term {}",term);
-                // TODO complete implementation.
-            }else{
-                new_expresstion.push(*term);
+                    opperators.push(opp);
+               },
+                Parenthesis =>{/* TODO complete implementation.*/},
+                Literal(_) | Variable(_)=>{
+                    new_expresstion.push(symbol);
+                },
             }
         }
 
         opperators.reverse();
         new_expresstion.append(
-            &mut opperators.iter()
-                .map(|op| op.to_string())
+            &mut opperators.into_iter()
+                .map(|op| Symbol::Operator(op))
                 .collect()
         );
-        println!("{:?}",new_expresstion);
+        println!("final:{:?}",new_expresstion);
         Postfix::new_raw(
             new_expresstion
         )
