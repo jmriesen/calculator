@@ -12,24 +12,35 @@ impl <'a> Infix<'a>{
 //TODO consider parsing earlier since all espresstions need to be parsed. 
 impl<'a> From<Infix<'a>> for Postfix<'a>{
     fn from(prefix:Infix<'a>)->Postfix{
-        let mut opperators : Vec<Operator> = vec![];
+        let mut opperators : Vec<Symbol<'a>> = vec![];
         let mut new_expresstion = vec![];
 
         for symbol in prefix.expression {
             use Symbol::*;
             match symbol{
                 Operator(opp)=>{
-                    while let Some(opperator) = opperators.last() {
-                        if opperator.priority()>=opp.priority(){
-                            let last = opperators.pop().unwrap();
-                            new_expresstion.push(Operator(last));
-                        }else{
-                            break;
+                    while let Some(symbol) = opperators.last() {
+                        match symbol{
+                            Operator(opperator) if opperator.priority()>=opp.priority()=>{
+                                let last = opperators.pop().unwrap();
+                                new_expresstion.push(last);
+                            }
+                            Operator(_) | Parenthesis{opening:true} => {break;},
+                            _ => unreachable!(),
                         }
                     }
-                    opperators.push(opp);
+                    opperators.push(Operator(opp));
                },
-                Parenthesis =>{/* TODO complete implementation.*/},
+                Parenthesis{opening:true} => opperators.push(symbol),
+                Parenthesis{opening:false} =>{
+                    while let Some(opperator) = opperators.pop(){
+                        match opperator{
+                            Operator(_) => new_expresstion.push(opperator),
+                            Parenthesis{opening:true} => {},
+                            _ => unreachable!(),
+                        }
+                    }
+                },
                 Literal(_) | Variable(_)=>{
                     new_expresstion.push(symbol);
                 },
@@ -37,12 +48,7 @@ impl<'a> From<Infix<'a>> for Postfix<'a>{
         }
 
         opperators.reverse();
-        new_expresstion.append(
-            &mut opperators.into_iter()
-                .map(|op| Symbol::Operator(op))
-                .collect()
-        );
-        println!("final:{:?}",new_expresstion);
+        new_expresstion.append(&mut opperators);
         Postfix::new_raw(
             new_expresstion
         )

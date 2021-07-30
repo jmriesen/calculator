@@ -36,4 +36,17 @@ fn multiplication_and_division_should_have_same_priority(){
 fn adding_surrounding_parenthesies_dose_not_change_result(){
     let variables = Default::default();
     assert_eq!(Infix::new("3 + 2").evaluate(&variables),Infix::new("( 3 + 2 )").evaluate(&variables));
+    assert_eq!(Infix::new("3 + 2").evaluate(&variables),Infix::new("( ( 3 + 2 ) )").evaluate(&variables));
+}
+
+#[test]
+fn parenthesise_should_cause_preference(){
+    let variables = Default::default();
+    assert_eq!(Infix::new("( 3 + 2 ) * 8").evaluate(&variables),Ok(40));
+    assert_eq!(Infix::new("( 3 + 7 ) / 5").evaluate(&variables),Ok(2));
+}
+#[test]
+fn should_be_able_to_use_multiple_parenthesises(){
+    let variables = Default::default();
+    assert_eq!(Infix::new("( ( 3 + 2 ) * ( 7 + 1 ) ) + 5").evaluate(&variables),Ok(45));
 }
